@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <cmath>
 #include <vector>
 #include <string>
@@ -128,6 +128,24 @@ public:
         }
 
         return Tensor(result);
+    }
+
+    vector<vector<vector<vector<vector<vector<double>>>>>> multiply_6(const Tensor& ten2) {
+        vector<vector<vector<vector<vector<vector<double>>>>>> result(this->z_size, vector<vector<vector<vector<vector<double>>>>>(this->y_size, vector<vector<vector<vector<double>>>>(this->x_size, vector<vector<vector<double>>>(ten2.z_size, vector<vector<double>>(ten2.y_size, vector<double>(ten2.x_size, 0.0))))));
+        for (int n1 = 0; n1 < this->z_size; n1++) {
+            for (int n2 = 0; n2 < this->y_size; n2++) {
+                for (int n3 = 0; n3 < this->x_size; n3++) {
+                    for (int m1 = 0; m1 < ten2.z_size; m1++) {
+                        for (int m2 = 0; m2 < ten2.y_size; m2++) {
+                            for (int m3 = 0; m3 < ten2.x_size; m3++) {
+                                result[n1][n2][n3][m1][m2][m3] = this->tensor[n1][n2][n3] * ten2.tensor[m1][m2][m3];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return result;
     }
 
     Tensor transpose() {
@@ -289,6 +307,35 @@ ostream& operator<<(ostream& os, const Tensor& ten) {
     return os;
 }
 
+ostream& operator<<(ostream& os, const vector<vector<vector<vector<vector<vector<double>>>>>>& ten) {
+    os << "{" << endl;
+    for (int i = 0; i < ten.size(); i++) {
+        os << "  {" << endl;
+        for (int j = 0; j < ten[i].size(); j++) {
+            os << "    {" << endl;
+            for (int k = 0; k < ten[i][j].size(); k++) {
+                os << "      {" << endl;
+                for (int l = 0; l < ten[i][j][k].size(); l++) {
+                    os << "        {" << endl;
+                    for (int m = 0; m < ten[i][j][k][l].size(); m++) {
+                        os << "          { ";
+                        for (int n = 0; n < ten[i][j][k][l][m].size(); n++) {
+                            os << ten[i][j][k][l][m][n] << " ";
+                        }
+                        os << "}," << endl;
+                    }
+                    os << "        }," << endl;
+                }
+                os << "      }," << endl;
+            }
+            os << "    }," << endl;
+        }
+        os << "  }," << endl;
+    }
+    os << "}" << endl;
+    return os;
+}
+
 
 Tensor::Tensor(vector<vector<vector<double>>> arr) {
     tensor = arr;
@@ -299,5 +346,7 @@ Tensor::Tensor(vector<vector<vector<double>>> arr) {
 
 
 int main() {
+    Tensor t1({ {{2, 1}, {4, 1}}, {{1, 1}, {10, 1}} });
+    cout << t1.multiply_6(t1);
     return 0;
 }
